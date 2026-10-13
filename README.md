@@ -51,7 +51,10 @@ boot (tb-order-boot) 默认 `direct`(旧通讯, 行为不变); 配置切到 `h3b
 
 - 启动时探测桥; 未就绪则通过 `wsl.exe -d <distro>` 拉起本服务 (setsid 常驻), 轮询 `/__health` 直到就绪;
 - 就绪后, hosts 白名单内的 mtop 网关请求改写为 `http://<桥>/<path>` + `Host: <原域名>` 发出, 桥转 HTTP/3;
-- 桥不可用且允许时回落到直连 (fallback-to-direct); 运行期 30s 健康巡检, 桥掉线自动切回直连。
+- 桥不可用时自动回落直连; 运行期 30s 健康巡检, 掉线每 2 分钟尝试重新拉起, 恢复后自动切回 h3。
+
+实现注意: 拉起脚本里后台进程启动后 shell 需存活约 1s 再退出 (`... & sleep 1; echo started`),
+否则 WSL 会在 wsl.exe 退出时把刚 fork 的 setsid 进程一起回收 (实测: bash 立即退出 -> 桥不存活)。
 
 配置 (打包 `application.yml` 默认值, 部署目录 `application.properties` 可覆盖, 改后重启 boot 生效):
 
@@ -64,8 +67,8 @@ transport:
     auto-start: true      # h3bridge 模式下 boot 启动时自动拉起本服务
     wsl-distro: AndroidLab-Ubuntu-24.04
     bridge-path: /root/xquic/bridge/h3_bridge
+    log-path: /root/xquic/bridge/h3_bridge.log
     start-timeout-ms: 45000
-    fallback-to-direct: true
     hosts: acs.m.taobao.com,acs.m.tmall.com,guide-acs.m.taobao.com,trade-acs.m.taobao.com,h5api.m.taobao.com,h5api.m.tmall.com
 ```
 
