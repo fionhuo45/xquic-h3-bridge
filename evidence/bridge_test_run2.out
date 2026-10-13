@@ -1,0 +1,30 @@
+=== TEST 1: GET via proxy (absolute-form) ===
+code=200 ver=1.1 time=0.097432
+--- body ---
+{"api":"mtop.common.getTimestamp","v":"*","ret":["SUCCESS::接口调用成功"],"data":{"t":"1791862620355"}}
+=== TEST 2: response headers ===
+< HTTP/1.1 200 OK
+< x-paramkey: mtop.common.getTimestamp
+< x-protocol: HTTP/3.0
+< eagleeye-traceid: 215040b817918626204494486e0fd1
+< strict-transport-security: max-age=0
+< s-rt: 0
+< s-cunit: 0
+< server: Tengine/3.0.46_20260920152855
+< date: Tue, 13 Oct 2026 03:37:00 GMT
+< content-type: application/json;charset=UTF-8
+< vary: Accept-Encoding
+< Content-Length: 109
+< Connection: close
+< 
+=== TEST 3: POST with body ===
+code=200 time=0.100500
+{"api":"mtop.common.getTimestamp","v":"*","ret":["SUCCESS::接口调用成功"],"data":{"t":"1791862620550"}}
+=== TEST 4: origin-form + Host header ===
+code=200 time=0.092926
+{"api":"mtop.common.getTimestamp","v":"*","ret":["SUCCESS::接口调用成功"],"data":{"t":"1791862620651"}}
+=== TEST 5: concurrent x4 ===
+c1=200/0.090232 c2=200/0.094398 c3=200/0.101279 c4=200/0.102626 
+=== bridge stdout ===
+xqc-h3-bridge v1.9.4 listening on 0.0.0.0:18080 (timeout 15s)
+=== DONE ===

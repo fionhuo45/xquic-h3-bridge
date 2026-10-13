@@ -1,0 +1,36 @@
+=== TEST 1: GET via proxy (absolute-form) ===
+code=200 ver=1.1 time=0.110002
+--- body ---
+{"api":"mtop.common.getTimestamp","v":"*","ret":["SUCCESS::接口调用成功"],"data":{"t":"1791864404341"}}
+=== TEST 2: response headers ===
+< HTTP/1.1 200 OK
+< x-paramkey: mtop.common.getTimestamp
+< x-protocol: HTTP/3.0
+< eagleeye-traceid: 213e0a0b17918644044504387e0ffd
+< strict-transport-security: max-age=0
+< s-rt: 0
+< s-cunit: 0
+< server: Tengine/3.0.46_20260920152855
+< date: Tue, 13 Oct 2026 04:06:44 GMT
+< content-type: application/json;charset=UTF-8
+< vary: Accept-Encoding
+< Content-Length: 109
+< Connection: close
+< 
+=== TEST 3: POST with body ===
+code=200 time=0.090626
+{"api":"mtop.common.getTimestamp","v":"*","ret":["SUCCESS::接口调用成功"],"data":{"t":"1791864404545"}}
+=== TEST 4: origin-form + Host header ===
+code=200 time=0.101237
+{"api":"mtop.common.getTimestamp","v":"*","ret":["SUCCESS::接口调用成功"],"data":{"t":"1791864404650"}}
+=== TEST 5: concurrent x4 ===
+c3=200/0.091845 c2=200/0.096566 c1=200/0.098573 c4=200/0.099634 
+=== TEST 6: local health endpoint (GET /__health) ===
+health code=200 time=0.000203
+xqc-h3-bridge ok
+=== TEST 7: loopback upstream guard (expect 400, fast, no hang) ===
+loop code=400 time=0.000288
+bad request
+=== bridge stdout ===
+xqc-h3-bridge v1.9.4 listening on 0.0.0.0:18080 (timeout 15s)
+=== DONE ===
